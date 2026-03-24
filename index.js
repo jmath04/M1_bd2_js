@@ -81,7 +81,7 @@ async function retornaCity(){
         {attributes: ['city_id', 'city', 'country_id', 'last_update']},
         {include: {
             model: Country,
-            atitributes: ['country_id', 'country', 'last_update']
+            attributes: ['country_id', 'country', 'last_update']
         }}
     ).then((result) => {
         mostraTabela(result);
