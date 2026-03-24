@@ -1,4 +1,10 @@
 require('dotenv').config({overide: true});
+const readline = require('readline').createInterface(
+    {
+        input: process.stdin,
+        output: process.stdout
+    }
+)
 const {Sequelize , Op, DataTypes, HasMany } = require('sequelize');
 const sequelize = new Sequelize('sakila', process.env.USER_DB, process.env.SENHA,{host:process.env.IP, dialect:"mysql"});
 
@@ -20,7 +26,6 @@ const Address = sequelize.define(
         timestamps: false
     }
 );
-
 
 const City = sequelize.define(
     'city',
@@ -90,5 +95,30 @@ async function retornaCountry(){
 };
 
 //retornaAddress();
-retornaCity();
+//retornaCity();
 //retornaCountry();
+
+async function main() {
+    while (true) {
+        await new Promise((resolve) => {
+            readline.question("\nDigite a tabela (address, city, country) ou 'sair': ", async (tabela) => {
+                if (tabela.toLowerCase() === 'sair') {
+                    console.log("Encerrando...");
+                    readline.close();
+                    process.exit(0);
+                } else if (tabela === 'address') {
+                    await retornaAddress();
+                } else if (tabela === 'city') {
+                    await retornaCity();
+                } else if (tabela === 'country') {
+                    await retornaCountry();
+                } else {
+                    console.log("Opção inválida.");
+                }
+                resolve();
+            });
+        });
+    }
+}
+
+main();
