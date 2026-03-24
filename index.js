@@ -1,8 +1,6 @@
+require('dotenv').config({overide: true});
 const {Sequelize , Op, DataTypes, HasMany } = require('sequelize');
-const senha = '';
-const user = 'root';
-const ip = 'localhost';
-const sequelize = new Sequelize('sakila', user, senha,{host:ip, dialect:"mysql"});
+const sequelize = new Sequelize('sakila', process.env.USER_DB, process.env.SENHA,{host:process.env.IP, dialect:"mysql"});
 
 const Address = sequelize.define(
     'address',
@@ -73,5 +71,24 @@ async function retornaAddress(){
     mostraTabela(result);
 };
 
-retornaAddress();
+async function retornaCity(){
+    await City.findAll(
+        {attributes: ['city_id', 'city', 'country_id', 'last_update']},
+        {include: {
+            model: Country,
+            atitributes: ['country_id', 'country', 'last_update']
+        }}
+    ).then((result) => {
+        mostraTabela(result);
+    });
+};
 
+async function retornaCountry(){
+    await Country.findAll().then((result) => {
+        mostraTabela(result);
+    });
+};
+
+//retornaAddress();
+retornaCity();
+//retornaCountry();
