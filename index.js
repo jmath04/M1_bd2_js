@@ -60,7 +60,58 @@ Address.belongsTo(City, {foreignKey: 'city_id'});
 
 
 function mostraTabela(tabela){
-    let resultado = tabela.map((item) => item.dataValues);
+    let resultado = tabela.map((item) => {
+        const data = item.dataValues;
+
+        if (data.address_id !== undefined) {
+            let cidade = null;
+            let pais = null;
+
+            if (data.city) {
+                cidade = data.city.city;
+
+                if (data.city.country) {
+                    pais = data.city.country.country;
+                }
+            }
+
+            return {
+                address_id: data.address_id,
+                address: data.address,
+                city: data.city.city,
+                city_id: data.city_id
+            };
+
+        }
+
+        if (data.city_id !== undefined) {
+            let pais = null;
+
+            if(data.country) {
+                pais = data.country.country;
+            }
+
+            return {
+                city_id: data.city_id,
+                city: data.city,
+                country: pais,
+                country_id: data.country_id
+            }; 
+
+
+        }
+
+        if (data.country_id !== undefined) {
+            return {
+                country_id: data.country_id,
+                country: data.country
+            };
+        }
+
+        return {}; 
+            
+    });
+    
     console.table(resultado);
 };
 
@@ -77,13 +128,13 @@ async function retornaAddress(){
 };
 
 async function retornaCity(){
-    await City.findAll(
-        {attributes: ['city_id', 'city', 'country_id', 'last_update']},
-        {include: {
+    await City.findAll({
+        attributes: ['city_id', 'city', 'country_id', 'last_update'],
+        include: {
             model: Country,
             attributes: ['country_id', 'country', 'last_update']
-        }}
-    ).then((result) => {
+        }
+    }).then((result) => {
         mostraTabela(result);
     });
 };
