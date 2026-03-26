@@ -5,6 +5,15 @@ const readline = require('readline').createInterface(
         output: process.stdout
     }
 )
+
+function pergunta(texto) {
+    return new Promise((resolve) => {
+        readline.question(texto, (resposta) => {
+            resolve(resposta.trim());
+        });
+    });
+}
+
 const {Sequelize , Op, DataTypes, HasMany } = require('sequelize');
 const sequelize = new Sequelize('sakila', process.env.USER_DB, process.env.SENHA,{host:process.env.IP, dialect:"mysql"});
 
@@ -98,7 +107,6 @@ function mostraTabela(tabela){
                 country_id: data.country_id
             }; 
 
-
         }
 
         if (data.country_id !== undefined) {
@@ -145,31 +153,159 @@ async function retornaCountry(){
     });
 };
 
+async function criaCountry() {
+    const nome = await pergunta("Nome do país: ");
+
+        if (!nome) {
+        console.log("Nome inválido!");
+        return;
+    }
+
+    const existente = await Country.findOne({
+        where: { country: nome }
+    });
+
+    if (existente) {
+        console.log("País já existe!");
+        return;
+    }
+
+    await Country.create({
+        country: nome,
+        last_update: new Date()
+    });
+
+    console.log("País criado!");
+}
+
+async function criaCity() {
+
+    const nomeCidade = await pergunta("Nome da cidade: ");
+    const nomePais = await pergunta("Nome do país: ");
+
+    if (!nomeCidade || !nomePais) {
+        console.log("Dados inválidos!");
+        return;
+    }
+
+    const pais = await Country.findOne({
+        where: { country: nomePais }
+    });
+
+    if (!pais) {
+        console.log("País não existe!");
+        return;
+    }
+
+    const existente = await City.findOne({
+        where: { city: nomeCidade }
+    });
+
+    if (existente) {
+        console.log("Cidade já existe!");
+        return;
+    }
+
+    await City.create({
+        city: nomeCidade,
+        country_id: pais.country_id,
+        last_update: new Date()
+    });
+
+    console.log("Cidade criada!");
+}
+
+async function criaAddress(params) {
+
+    const endereco = await pergunta("Endereço: ");
+    const nomeCidade = await pergunta("Nome da cidade: ");
+
+    if (!endereco || !nomeCidade) {
+        console.log("Dados inválidos!");
+        return;
+    }
+
+    const cidade = await City.findOne({
+        where: { city: nomeCidade }
+    });
+
+    if (!cidade) {
+        console.log("Cidade não existe!");
+        return;
+    }
+
+    const existente = await Address.findOne({
+        where: { address: endereco }
+    });
+
+    if (existente) {
+        console.log("Endereço já existe!");
+        return;
+    }
+
+    await Address.create({
+        address: endereco,
+        district: "Centro",
+        city_id: cidade.city_id,
+        last_update: new Date()
+    });
+
+    console.log("Endereço criado!");
+}
+
 //retornaAddress();
 //retornaCity();
 //retornaCountry();
 
 async function main() {
+
     while (true) {
-        await new Promise((resolve) => {
-            readline.question("\nDigite a tabela (address, city, country) ou 'sair': ", async (tabela) => {
-                if (tabela.toLowerCase() === 'sair') {
-                    console.log("Encerrando...");
-                    readline.close();
-                    process.exit(0);
-                } else if (tabela === 'address') {
-                    await retornaAddress();
-                } else if (tabela === 'city') {
-                    await retornaCity();
-                } else if (tabela === 'country') {
-                    await retornaCountry();
-                } else {
-                    console.log("Opção inválida.");
-                }
-                resolve();
-            });
-        });
+
+        console.log("\n1 - Listar dados");
+        console.log("2 - Inserir dados");
+        console.log("0 - Sair");
+
+        const opcao = await pergunta("Escolha uma opção: ");
+
+        if (opcao === '0') {
+            console.log("Encerrando...");
+            readline.close();
+            process.exit(0);
+        }
+
+        if (opcao === '1') {
+
+            const tabela = await pergunta("Qual tabela (address, city, country): ");
+
+            if (tabela === 'address') {
+                await retornaAddress();
+            } else if (tabela === 'city') {
+                await retornaCity();
+            } else if (tabela === 'country') {
+                await retornaCountry();
+            } else {
+                console.log("Tabela inválida.");
+            }
+        }
+
+        else if (opcao === '2') {
+
+            const tabela = await pergunta("Inserir em qual (country, city, address): ");
+
+            if (tabela === 'country') {
+                await criaCountry();
+            } else if (tabela === 'city') {
+                await criaCity();
+            } else if (tabela === 'address') {
+                await criaAddress();
+            } else {
+                console.log("Opção inválida.");
+            }
+        }
+
+        else {
+            console.log("Opção inválida.");
+        }
     }
 }
-
 main();
