@@ -193,8 +193,14 @@ async function criaCity() {
     });
 
     if (!pais) {
-        console.log("País não existe!");
-        return;
+        console.log("País não existe! Deseja criar? (s/n)");
+        const resposta = await pergunta("Resposta: ");
+        if (resposta === 's') {
+            await criaCountry();
+        } else {
+            console.log("Operação cancelada.");
+            return;
+        }
     }
 
     const existente = await City.findOne({
@@ -230,8 +236,14 @@ async function criaAddress(params) {
     });
 
     if (!cidade) {
-        console.log("Cidade não existe!");
-        return;
+        console.log("Cidade não existe! Deseja criar? (s/n)");
+        const resposta = await pergunta("Resposta: ");
+        if (resposta === 's') {
+            await criaCity();
+        } else {
+            console.log("Operação cancelada.");
+            return;
+        }
     }
 
     const existente = await Address.findOne({
@@ -253,9 +265,7 @@ async function criaAddress(params) {
     console.log("Endereço criado!");
 }
 
-//retornaAddress();
-//retornaCity();
-//retornaCountry();
+
 
 async function main() {
 
