@@ -26,7 +26,6 @@ async function iniciarMigracao() {
 
     const data = await fs.readFile("people-100000.csv", "utf8");
     
-    // Transforma o texto em um array de linhas
     const linhas = data.split("\n").slice(1); 
 
     console.log(` Processando ${linhas.length} registros...`);
