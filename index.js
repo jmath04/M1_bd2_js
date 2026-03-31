@@ -265,7 +265,64 @@ async function criaAddress(params) {
     console.log("Endereço criado!");
 }
 
+/*Possivel main () - Juntar PT1 e PT2
+async function main() {
+    while (true) {    
+        console.log("\n====== TRABALHO BANCO DE DADOS ======");
+        console.log("1 - PARTE 1 (Sakila)");
+        console.log("2 - PARTE 2 (People.csv)");
+        console.log("0 - Sair");
 
+        const principal = await pergunta("Escolha uma opção: ");
+        
+        if (principal === '0') break;
+        
+        if (principal === '1') {
+            console.log("\n[PARTE 1] 1-Listar | 2-Inserir"); 
+            const op = await pergunta("Opção: "); 
+
+            if (op === '1') { 
+                const tabela = await pergunta("Qual tabela (address, city, country): ");
+                if (tabela === 'address') {
+                    await retornaAddress();
+                } else if (tabela === 'city') {
+                    await retornaCity();
+                } else if (tabela === 'country') {
+                    await retornaCountry();
+                } else {
+                    console.log("Tabela inválida.");
+                }
+            } 
+            else if (op === '2') { 
+                const tabela = await pergunta("Inserir em qual (country, city, address): ");
+                if (tabela === 'country') {
+                    await criaCountry();
+                } else if (tabela === 'city') {
+                    await criaCity();
+                } else if (tabela === 'address') {
+                    await criaAddress();
+                } else {
+                    console.log("Opção inválida.");
+                }
+            }
+        } 
+        
+        else if (principal === '2') {
+            console.log("\n[PARTE 2] 1-Importar CSV | 2-Buscar Nome | 3-Buscar Job"); 
+            const op2 = await pergunta("Opção: ");
+            if (op2 === '1') {
+                FuncaoX
+            } else if (op2 === '2') {
+                FuncaoY
+            } else if (op2 === '3') {
+                FuncaoM
+            } else {
+                console.log("Opção inválida.");
+            }
+        }
+    }
+}
+*/
 
 async function main() {
 
