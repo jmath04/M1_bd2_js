@@ -265,6 +265,42 @@ async function criaAddress(params) {
     console.log("Endereço criado!");
 }
 
+/*
+PARTE 2
+
+MAPEAR AS TABELAS -- Acredito que MySQL o nome das tabelas será Jobs -- People 
+const Job = sequelize.define(
+    'Job',
+    {
+        'JobTitle':{type: DataTypes.STRING, unique: true},
+    },
+    {
+        tableName: 'Jobs',
+        timestamps: false
+    }
+);
+
+const Person = sequelize.define(
+    'Person',
+    {
+        'Index': {type: DataTypes.INTEGER},
+        'User':{type: DataTypes.STRING},
+        'First_Name':{type: DataTypes.STRING},
+        'Last_Name':{type: DataTypes.STRING},
+        'Sex':{type: DataTypes.STRING},
+        'Email':{type: DataTypes.STRING},
+        'Phone':{type: DataTypes.STRING},
+        'DateBirth':{type: DataTypes.DATEONLY}
+    },
+    {
+        tableName: 'People',
+        timestamps: false
+    }
+);
+Job.hasMany(Person, {foreignKey: 'job_id'});
+Person.belongsTo(Job, {foreignKey: 'job_id'});
+*/
+
 /*Possivel main () - Juntar PT1 e PT2
 async function main() {
     while (true) {    
