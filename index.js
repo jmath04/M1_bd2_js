@@ -280,25 +280,47 @@ const Job = sequelize.define(
     }
 );
 
-const Person = sequelize.define(
-    'Person',
+const Persona = sequelize.define(
+    'Persona',
     {
-        'Index': {type: DataTypes.INTEGER},
-        'User':{type: DataTypes.STRING},
-        'First_Name':{type: DataTypes.STRING},
-        'Last_Name':{type: DataTypes.STRING},
-        'Sex':{type: DataTypes.STRING},
-        'Email':{type: DataTypes.STRING},
-        'Phone':{type: DataTypes.STRING},
-        'DateBirth':{type: DataTypes.DATEONLY}
+        'csv_index': {type: DataTypes.INTEGER}, //N tenho certeza se precisa -- N pensei ainda como vamos fazer a concersao do csv para mysql
+        'user':{type: DataTypes.STRING},
+        'first_name':{type: DataTypes.STRING},
+        'last_name':{type: DataTypes.STRING},
+        'sex':{type: DataTypes.STRING},
+        'email':{type: DataTypes.STRING},
+        'phone':{type: DataTypes.STRING},
+        'date_birth':{type: DataTypes.DATEONLY}
     },
     {
         tableName: 'People',
         timestamps: false
     }
 );
-Job.hasMany(Person, {foreignKey: 'job_id'});
-Person.belongsTo(Job, {foreignKey: 'job_id'});
+Job.hasMany(Persona, {foreignKey: 'job_id'});
+Persona.belongsTo(Job, {foreignKey: 'job_id'});
+*/
+
+/*
+BUSCAR_NOME
+
+async function ByName(){
+    const temp = await pergunta("Nome a ser procurado:");
+    let res_temp = await Persona.findAll({
+        where: {
+            [Op.or]:[
+                {first_name: {[Op.like]:`%${temp}%`}},
+                {last_name: {[Op.like]:`%${temp}%`}}
+            ]
+        },
+        include: [Job]
+    });
+    if (res_temp.length){
+        //funcaoMOSTRAR 
+    }else{
+        console.log ("S/ Registro")
+    }
+}
 */
 
 /*Possivel main () - Juntar PT1 e PT2
@@ -309,9 +331,9 @@ async function main() {
         console.log("2 - PARTE 2 (People.csv)");
         console.log("0 - Sair");
 
-        const principal = await pergunta("Escolha uma opção: ");
+        const op_main = await pergunta("Escolha uma opção: ");
         
-        if (principal === '0') break;
+        if (op_main === '0') break;
         
         if (principal === '1') {
             console.log("\n[PARTE 1] 1-Listar | 2-Inserir"); 
@@ -343,7 +365,7 @@ async function main() {
             }
         } 
         
-        else if (principal === '2') {
+        else if (op_main === '2') {
             console.log("\n[PARTE 2] 1-Importar CSV | 2-Buscar Nome | 3-Buscar Job"); 
             const op2 = await pergunta("Opção: ");
             if (op2 === '1') {
