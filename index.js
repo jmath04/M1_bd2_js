@@ -265,10 +265,10 @@ async function criaAddress(params) {
     console.log("Endereço criado!");
 }
 
-/*
-PARTE 2
 
-MAPEAR AS TABELAS -- Acredito que MySQL o nome das tabelas será Jobs -- People 
+//PARTE 2
+
+//MAPEAR AS TABELAS -- Acredito que MySQL o nome das tabelas será Jobs -- People 
 const Job = sequelize.define(
     'Job',
     {
@@ -299,10 +299,10 @@ const Persona = sequelize.define(
 );
 Job.hasMany(Persona, {foreignKey: 'job_id'});
 Persona.belongsTo(Job, {foreignKey: 'job_id'});
-*/
 
-/*
-BUSCAR_NOME
+
+
+//BUSCAR_NOME
 
 async function ByName(){
     const temp = await pergunta("Nome a ser procurado:");
@@ -321,9 +321,9 @@ async function ByName(){
         console.log ("S/ Registro")
     }
 }
-*/
 
-/*Possivel main () - Juntar PT1 e PT2
+
+//Possivel main () - Juntar PT1 e PT2
 async function main() {
     while (true) {    
         console.log("\n====== TRABALHO BANCO DE DADOS ======");
@@ -335,7 +335,7 @@ async function main() {
         
         if (op_main === '0') break;
         
-        if (principal === '1') {
+        if (op_main === '1') {
             console.log("\n[PARTE 1] 1-Listar | 2-Inserir"); 
             const op = await pergunta("Opção: "); 
 
@@ -380,8 +380,8 @@ async function main() {
         }
     }
 }
-*/
 
+/*
 async function main() {
 
     while (true) {
@@ -433,4 +433,5 @@ async function main() {
         }
     }
 }
+*/    
 main();

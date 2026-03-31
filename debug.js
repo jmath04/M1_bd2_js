@@ -1,6 +1,6 @@
-require('dotenv').config();
-const fs = require('fs').promises; // Use .promises para poder usar await
-const { Sequelize, Op, DataTypes } = require('sequelize');
+import 'dotenv/config';
+import fs from 'fs/promises' 
+import { Sequelize, Op, DataTypes } from 'sequelize';
 
 const sequelize = new Sequelize('testes_BD2', process.env.USER_DB, process.env.SENHA, {
   host: process.env.IP, 
@@ -22,16 +22,35 @@ const people = sequelize.define(
     }
 );
 
-async function rodarTeste() {
-  try {
-    await sequelize.sync({alter:true})
-    const CSV = await fs.readFile("people-100000.csv", "utf8");
-    console.log("Conteúdo lido.");
-    console.log(CSV)
+async function iniciarMigracao() {
+
+    const data = await fs.readFile("people-100000.csv", "utf8");
     
-  } catch (err) {
-    console.error("Erro ao ler arquivo:", err);
-  }
+    // Transforma o texto em um array de linhas
+    const linhas = data.split("\n").slice(1); 
+
+    console.log(` Processando ${linhas.length} registros...`);
+
+    const registrosParaInserir = linhas.map(linha => {
+      const colunas = linha.split(",");
+      return {
+        index: colunas[0],
+        id: colunas[1],
+        nome: colunas[2],
+        sobrenome: colunas[3],
+        sex : colunas[4],
+        email : colunas[5],
+        phone : colunas[6],
+        dateOfBrith : colunas[7],
+        jobTitle : colunas[8]
+      };
+    }).filter(p => p.nome); 
+
+    console.log(" Migração concluída com sucesso!");
+
+    return registrosParaInserir;
 }
 
-rodarTeste();
+let inputs = await iniciarMigracao();
+
+console.log(inputs);
