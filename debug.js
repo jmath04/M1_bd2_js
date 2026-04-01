@@ -18,9 +18,21 @@ const people = sequelize.define(
         'email': {type: DataTypes.STRING, field:'email'},
         'phone': {type: DataTypes.STRING, field:'phone'},
         'dateOfBirth': {type: DataTypes.DATE, field:'date_of_birth'},
-        'jobTitle' : {type: DataTypes.STRING, field: 'job_title'}
+        'jobID' : {type: DataTypes.STRING, field: 'job_ID'}
     }
 );
+const jobs = sequelize.define(
+  'jobs',
+  {
+    'jobID': {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true, field:'job_ID'},
+    'jobTitle': {type: DataTypes.STRING, field:'job_Title'}
+  }
+);
+
+people.hasMany(jobs,{foreingkey:'job_ID'});
+
+await sequelize.sync({force:true});
+
 
 async function iniciarMigracao() {
 
@@ -52,4 +64,46 @@ async function iniciarMigracao() {
 
 let inputs = await iniciarMigracao();
 
-console.log(inputs);
+async function insereJob(jobNome){
+    jobs.create({
+      jobTitle: jobNome
+    })
+};
+
+function mostraTabela(tabela){
+    const tabularData = tabela.map(result => result.get({plain:true}));
+    console.table(tabularData);
+};
+
+async function mostraJobs(){
+  let result = await jobs.findAll();
+  mostraTabela(result);
+}
+async function retornaAddress(){
+    const result =  await Address.findAll(
+        {include: {
+            model: City,
+            include: {
+                model: Country
+            }
+        }}
+    );
+    mostraTabela(result);
+};
+
+async function populaTabela(tabela){
+    for( let i = 0; i < tabela.length; i++){
+        tabela[i].index = tabela[i].index.replace(/"/g,'');
+        tabela[i].index = parseInt(tabela[i].index);
+        tabela[i].jobTitle = tabela[i].jobTitle.replace(/""/g,'');
+        await insereJob(tabela[i].jobTitle);
+        tabela[i].jobTitle = i;
+        console.log(tabela[i]);
+        break;
+    }
+    mostraJobs();
+}
+
+
+
+populaTabela(inputs);

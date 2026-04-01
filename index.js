@@ -27,7 +27,7 @@ const Address = sequelize.define(
         'city_id':{type: DataTypes.INTEGER},
         'postal_code':{type: DataTypes.STRING},
         'phone':{type: DataTypes.STRING},
-        location:{type: DataTypes.GEOMETRY('POINT')},
+        'location':{type: DataTypes.GEOMETRY('POINT')},
         'last_update':{type: DataTypes.DATE}
     },
     {
