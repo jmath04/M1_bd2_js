@@ -45,7 +45,7 @@ const jobs = sequelize.define(
 jobs.hasMany(people,{foreignKey:'job_ID'});
 people.belongsTo(jobs, {foreignKey:'job_ID'});
 
-//await sequelize.sync({force:true});
+await sequelize.sync({force:true});
 
 
 async function iniciarMigracao() {
@@ -240,8 +240,8 @@ async function main() {
 }
 
 
-// let inputs = await iniciarMigracao();
+let inputs = await iniciarMigracao();
 
-//populaTabela(inputs);
+populaTabela(inputs);
 
 await main();

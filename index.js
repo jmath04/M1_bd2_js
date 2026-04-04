@@ -120,7 +120,7 @@ function mostraTabela(tabela){
             
     });
     
-    console.table(resultado);
+    console.table(resultado);   
 };
 
 async function retornaAddress(){
