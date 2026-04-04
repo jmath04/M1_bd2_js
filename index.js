@@ -266,122 +266,6 @@ async function criaAddress(params) {
 }
 
 
-//PARTE 2
-
-//MAPEAR AS TABELAS -- Acredito que MySQL o nome das tabelas será Jobs -- People 
-const Job = sequelize.define(
-    'Job',
-    {
-        'JobTitle':{type: DataTypes.STRING, unique: true},
-    },
-    {
-        tableName: 'Jobs',
-        timestamps: false
-    }
-);
-
-const Persona = sequelize.define(
-    'Persona',
-    {
-        'csv_index': {type: DataTypes.INTEGER}, //N tenho certeza se precisa -- N pensei ainda como vamos fazer a concersao do csv para mysql
-        'user':{type: DataTypes.STRING},
-        'first_name':{type: DataTypes.STRING},
-        'last_name':{type: DataTypes.STRING},
-        'sex':{type: DataTypes.STRING},
-        'email':{type: DataTypes.STRING},
-        'phone':{type: DataTypes.STRING},
-        'date_birth':{type: DataTypes.DATEONLY}
-    },
-    {
-        tableName: 'People',
-        timestamps: false
-    }
-);
-Job.hasMany(Persona, {foreignKey: 'job_id'});
-Persona.belongsTo(Job, {foreignKey: 'job_id'});
-
-
-
-//BUSCAR_NOME
-
-async function ByName(){
-    const temp = await pergunta("Nome a ser procurado:");
-    let res_temp = await Persona.findAll({
-        where: {
-            [Op.or]:[
-                {first_name: {[Op.like]:`%${temp}%`}},
-                {last_name: {[Op.like]:`%${temp}%`}}
-            ]
-        },
-        include: [Job]
-    });
-    if (res_temp.length){
-        //funcaoMOSTRAR 
-    }else{
-        console.log ("S/ Registro")
-    }
-}
-
-
-//Possivel main () - Juntar PT1 e PT2
-async function main() {
-    while (true) {    
-        console.log("\n====== TRABALHO BANCO DE DADOS ======");
-        console.log("1 - PARTE 1 (Sakila)");
-        console.log("2 - PARTE 2 (People.csv)");
-        console.log("0 - Sair");
-
-        const op_main = await pergunta("Escolha uma opção: ");
-        
-        if (op_main === '0') break;
-        
-        if (op_main === '1') {
-            console.log("\n[PARTE 1] 1-Listar | 2-Inserir"); 
-            const op = await pergunta("Opção: "); 
-
-            if (op === '1') { 
-                const tabela = await pergunta("Qual tabela (address, city, country): ");
-                if (tabela === 'address') {
-                    await retornaAddress();
-                } else if (tabela === 'city') {
-                    await retornaCity();
-                } else if (tabela === 'country') {
-                    await retornaCountry();
-                } else {
-                    console.log("Tabela inválida.");
-                }
-            } 
-            else if (op === '2') { 
-                const tabela = await pergunta("Inserir em qual (country, city, address): ");
-                if (tabela === 'country') {
-                    await criaCountry();
-                } else if (tabela === 'city') {
-                    await criaCity();
-                } else if (tabela === 'address') {
-                    await criaAddress();
-                } else {
-                    console.log("Opção inválida.");
-                }
-            }
-        } 
-        
-        else if (op_main === '2') {
-            console.log("\n[PARTE 2] 1-Importar CSV | 2-Buscar Nome | 3-Buscar Job"); 
-            const op2 = await pergunta("Opção: ");
-            if (op2 === '1') {
-                FuncaoX
-            } else if (op2 === '2') {
-                FuncaoY
-            } else if (op2 === '3') {
-                FuncaoM
-            } else {
-                console.log("Opção inválida.");
-            }
-        }
-    }
-}
-
-/*
 async function main() {
 
     while (true) {
@@ -433,5 +317,5 @@ async function main() {
         }
     }
 }
-*/    
+  
 main();
