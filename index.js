@@ -20,7 +20,7 @@ const sequelize = new Sequelize('sakila', process.env.USER_DB, process.env.SENHA
 const Address = sequelize.define(
     'address',
     {
-        'address_id':{type: DataTypes.INTEGER, primaryKey: true},
+        'address_id':{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
         'address':{type: DataTypes.STRING},
         'address2':{type: DataTypes.STRING},
         'district':{type: DataTypes.STRING},
@@ -39,7 +39,7 @@ const Address = sequelize.define(
 const City = sequelize.define(
     'city',
     {
-        'city_id':{type: DataTypes.INTEGER, primaryKey: true},
+        'city_id':{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
         'city':{type: DataTypes.STRING},
         'country_id':{type: DataTypes.INTEGER},
         'last_update':{type: DataTypes.DATE}
@@ -53,7 +53,7 @@ const City = sequelize.define(
 const Country = sequelize.define(
     'country',
     {
-        'country_id':{type: DataTypes.INTEGER, primaryKey: true},
+        'country_id':{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
         'country':{type: DataTypes.STRING},
         'last_update':{type: DataTypes.DATE}
     },
@@ -87,6 +87,7 @@ function mostraTabela(tabela){
             return {
                 address_id: data.address_id,
                 address: data.address,
+                phone: data.phone,
                 city: data.city.city,
                 city_id: data.city_id
             };
@@ -170,12 +171,13 @@ async function criaCountry() {
         return;
     }
 
-    await Country.create({
+    let paisCriado = await Country.create({
         country: nome,
         last_update: new Date()
     });
 
     console.log("País criado!");
+    return paisCriado;
 }
 
 async function criaCity() {
@@ -188,7 +190,7 @@ async function criaCity() {
         return;
     }
 
-    const pais = await Country.findOne({
+    let pais = await Country.findOne({
         where: { country: nomePais }
     });
 
@@ -196,7 +198,7 @@ async function criaCity() {
         console.log("País não existe! Deseja criar? (s/n)");
         const resposta = await pergunta("Resposta: ");
         if (resposta === 's') {
-            await criaCountry();
+            pais = await criaCountry();
         } else {
             console.log("Operação cancelada.");
             return;
@@ -212,26 +214,29 @@ async function criaCity() {
         return;
     }
 
-    await City.create({
+    let cidade = await City.create({
         city: nomeCidade,
         country_id: pais.country_id,
         last_update: new Date()
     });
-
+    
     console.log("Cidade criada!");
+
+    return cidade;
 }
 
 async function criaAddress(params) {
 
     const endereco = await pergunta("Endereço: ");
     const nomeCidade = await pergunta("Nome da cidade: ");
+    const telefone = await pergunta("Telefone: ");
 
     if (!endereco || !nomeCidade) {
         console.log("Dados inválidos!");
         return;
     }
 
-    const cidade = await City.findOne({
+    let cidade = await City.findOne({
         where: { city: nomeCidade }
     });
 
@@ -239,7 +244,7 @@ async function criaAddress(params) {
         console.log("Cidade não existe! Deseja criar? (s/n)");
         const resposta = await pergunta("Resposta: ");
         if (resposta === 's') {
-            await criaCity();
+            cidade = await criaCity();
         } else {
             console.log("Operação cancelada.");
             return;
@@ -258,7 +263,9 @@ async function criaAddress(params) {
     await Address.create({
         address: endereco,
         district: "Centro",
+        phone: telefone,
         city_id: cidade.city_id,
+        location: {type: 'Point', coordinates: [0, 0]},
         last_update: new Date()
     });
 

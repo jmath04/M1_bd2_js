@@ -54,8 +54,6 @@ async function iniciarMigracao() {
     
     const linhas = data.split("\n").slice(1); 
 
-    console.log(` Processando ${linhas.length} registros...`);
-
     const registrosParaInserir = linhas.map(linha => {
       const colunas = linha.split(",");
       return {
@@ -239,9 +237,8 @@ async function main() {
     }
 }
 
-
 let inputs = await iniciarMigracao();
 
-populaTabela(inputs);
+await populaTabela(inputs);
 
 await main();
